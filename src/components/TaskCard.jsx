@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import {
   CalendarDays,
-  ChevronLeft,
-  ChevronRight,
+  ChevronDown,
   GripVertical,
   Pencil,
   Trash2,
 } from 'lucide-react';
-import { COLUMNS, COLUMN_IDS, PRIORITY_MAP } from '../config/constants';
+import { COLUMNS, PRIORITY_MAP } from '../config/constants';
 import {
   formatDueDate,
   formatDueDateLong,
@@ -21,9 +20,6 @@ export default function TaskCard({ task, onEdit, onDelete, onMove }) {
   const [isDragging, setIsDragging] = useState(false);
 
   const priority = PRIORITY_MAP[task.priority] ?? PRIORITY_MAP.medium;
-  const columnIndex = COLUMN_IDS.indexOf(task.status);
-  const previousColumn = COLUMNS[columnIndex - 1];
-  const nextColumn = COLUMNS[columnIndex + 1];
   const overdue = isOverdue(task.dueDate, task.status);
   const dueToday = isDueToday(task.dueDate, task.status);
   const isCompleted = task.status === 'completed';
@@ -63,38 +59,27 @@ export default function TaskCard({ task, onEdit, onDelete, onMove }) {
             {priority.label}
           </Badge>
           <div className="-mr-1 -mt-1 flex items-center gap-0.5">
-            <Button
-              size="icon-xs"
-              variant="ghost"
-              className="rounded-lg"
-              onClick={() => onMove(task, -1)}
-              disabled={!previousColumn}
-              aria-label={
-                previousColumn
-                  ? `Move to ${previousColumn.title}`
-                  : 'Already in the first column'
-              }
-              title={
-                previousColumn ? `Move to ${previousColumn.title}` : undefined
-              }
-            >
-              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-            </Button>
-            <Button
-              size="icon-xs"
-              variant="ghost"
-              className="rounded-lg"
-              onClick={() => onMove(task, 1)}
-              disabled={!nextColumn}
-              aria-label={
-                nextColumn
-                  ? `Move to ${nextColumn.title}`
-                  : 'Already in the last column'
-              }
-              title={nextColumn ? `Move to ${nextColumn.title}` : undefined}
-            >
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </Button>
+            <label className="relative">
+              <span className="sr-only">Status for {task.title}</span>
+              <select
+                value={task.status}
+                onChange={(event) => onMove(task, event.target.value)}
+                onDragStart={(event) => event.preventDefault()}
+                aria-label={`Status for ${task.title}`}
+                title="Change status"
+                className="h-7 max-w-28 appearance-none rounded-lg border border-slate-200 bg-white py-1 pl-2 pr-6 text-[11px] font-medium text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600"
+              >
+                {COLUMNS.map((column) => (
+                  <option key={column.id} value={column.id}>
+                    {column.title}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-1.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400"
+                aria-hidden="true"
+              />
+            </label>
             <Button
               size="icon-xs"
               variant="ghost"

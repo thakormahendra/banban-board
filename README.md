@@ -873,3 +873,6 @@ Released under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 ---
 
 Built with care using React, Redux Toolkit, React Router, and Tailwind CSS. Contributions, issues, and suggestions are welcome.
+
+
+<video src="./kanban board.mov" controls="controls" width="100%"></video>

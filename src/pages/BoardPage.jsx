@@ -9,7 +9,7 @@ import EmptyState from '../components/EmptyState';
 import FilterBar from '../components/FilterBar';
 import SearchBar from '../components/SearchBar';
 import TaskModal from '../components/TaskModal';
-import { COLUMN_IDS, COLUMNS, DEFAULT_STATUS } from '../config/constants';
+import { COLUMNS, DEFAULT_STATUS } from '../config/constants';
 import { useKanbanFilters } from '../hooks/useKanbanFilters';
 import { resetFilters } from '../redux/filterSlice';
 import { deleteTask, moveTask } from '../redux/kanbanSlice';
@@ -45,12 +45,8 @@ export default function BoardPage() {
     setFormState((current) => ({ ...current, open: false }));
   };
 
-  const handleMoveTask = (task, direction) => {
-    const columnIndex = COLUMN_IDS.indexOf(task.status);
-    const target = COLUMNS[columnIndex + direction];
-    if (!target) return;
-
-    dispatch(moveTask({ id: task.id, toStatus: target.id }));
+  const handleMoveTask = (task, toStatus) => {
+    dispatch(moveTask({ id: task.id, toStatus }));
   };
 
   const handleDropTask = (taskId, toStatus, toIndex) => {
